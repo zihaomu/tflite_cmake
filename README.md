@@ -1,6 +1,7 @@
 # tflite-cmake
 tflite包的cmake在编译android GPU版本时，会遇到很多报错。主要原因是相关代码没有被加入到cmake，以及一些代码需要flatbuffer去编译。鉴于tensorflow并不是很积极的修复错误的cmake代码，这个仓库将会整理并测试对应版本release代码进行同步更新。
 代码参考：https://github.com/tensorflow/tensorflow/pull/62705
+目前涉及到有问题的版本包括`2.12～2.16`。`2.10`版本无上述问题。
 
 ## 编译安卓GPU版本的so
 为什么一定需要GPU版本的tflite？经过测试发现，tflite只有GPU版本在移动端速度比较快，而tflite的CPU速度比MNN要慢约一倍。（在mac intel i9和安卓高通888芯片上测试对比）
@@ -22,17 +23,22 @@ ls
 配置好ndk相关环境变量
 ```bash
 export ANDROID_HOME=xxx/Library/Android/sdk
-export ANDROID_NDK_HOME=xxx/Android/sdk/ndk/26.1.10909125
+export ANDROID_NDK_HOME=xxx/Android/sdk/ndk/26.1.10909125 # 换成你自己的ndk
 ```
 
 #### step2: 编译tflite
 ```bash
 
- cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_TOOLCHAIN_FILE=xxx/ndk/xxx/build/cmake/android.toolchain.cmake -DANDROID_ABI=arm64-v8a -DTFLITE_ENABLE_GPU=ON -DANDROID_PLATFORM=26 -DFLATBUFFERS_FLATC_EXECUTABLE=xxx/flatbuffers/flatc
+ cmake .. -DBUILD_SHARED_LIBS=ON \
+ -DCMAKE_TOOLCHAIN_FILE=xxx/ndk/xxx/build/cmake/android.toolchain.cmake \
+ -DANDROID_ABI=arm64-v8a \
+ -DTFLITE_ENABLE_GPU=ON \
+ -DANDROID_PLATFORM=26 \
+ -DFLATBUFFERS_FLATC_EXECUTABLE=xxx/flatbuffers/flatc
 ```
 期间需要下载很多第三方依赖，下载失败可以手动找到需要下载的文件以及下载链接，然后手动下载好放到对应位置。重新执行上面的指令即可。
 
-以上，记录一下被坑进去的2天时间。
+以此仓库记录一下被坑进去的2天时间。
 
 
 
