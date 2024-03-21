@@ -41,7 +41,16 @@ set(FARMHASH_SOURCE_DIR "${farmhash_SOURCE_DIR}" CACHE PATH
   "Source directory for the CMake project."
 )
 
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_subdirectory(
   "${CMAKE_CURRENT_LIST_DIR}/farmhash"
   "${farmhash_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
+
+if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+endif()

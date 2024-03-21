@@ -37,8 +37,18 @@ endif()
 
 set(ABSL_USE_GOOGLETEST_HEAD OFF CACHE BOOL "Disable googletest")
 set(ABSL_RUN_TESTS OFF CACHE BOOL "Disable build of ABSL tests")
+
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_subdirectory(
   "${abseil-cpp_SOURCE_DIR}"
   "${abseil-cpp_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
+
+if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+endif()
 

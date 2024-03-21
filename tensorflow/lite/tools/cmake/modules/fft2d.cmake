@@ -34,7 +34,16 @@ if(NOT fft2d_POPULATED)
 endif()
 
 set(FFT2D_SOURCE_DIR "${fft2d_SOURCE_DIR}" CACHE PATH "fft2d source")
+
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_subdirectory(
   "${CMAKE_CURRENT_LIST_DIR}/fft2d"
   "${fft2d_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
+if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+endif()

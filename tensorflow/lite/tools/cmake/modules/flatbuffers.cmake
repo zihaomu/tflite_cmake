@@ -37,12 +37,19 @@ endif()
 option(FLATBUFFERS_BUILD_TESTS OFF)
 # Required for Windows, since it has macros called min & max which
 # clashes with std::min
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_definitions(-DNOMINMAX=1)
 add_subdirectory(
   "${flatbuffers_SOURCE_DIR}"
   "${flatbuffers_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
 remove_definitions(-DNOMINMAX)
+
+
 
 # For BuildFlatBuffers.cmake
 set(CMAKE_MODULE_PATH

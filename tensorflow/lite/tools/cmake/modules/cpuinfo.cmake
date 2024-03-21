@@ -38,7 +38,16 @@ set(CPUINFO_BUILD_UNIT_TESTS OFF CACHE BOOL "Disable cpuinfo unit tests")
 set(CPUINFO_BUILD_MOCK_TESTS OFF CACHE BOOL "Disable cpuinfo cpuinfo mock tests")
 set(CPUINFO_BUILD_BENCHMARKS OFF CACHE BOOL "Disable cpuinfo micro-benchmarks")
 
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_subdirectory(
   "${cpuinfo_SOURCE_DIR}"
   "${cpuinfo_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
+
+if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+endif()

@@ -61,11 +61,20 @@ set(CMAKE_PREFIX_PATH
 )
 include(GNUInstallDirs)
 include(CMakeDependentOption)
+option(TFLITE_LESS_LINK "Enable build with less library link" OFF) # it will force compile the third library in static
+option(TFLITE_SHARED_LIB "Enable build with shared library" ON)
+
+if (TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+else()
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 option(TFLITE_ENABLE_INSTALL "Enable install rule" OFF)
 option(TFLITE_ENABLE_LABEL_IMAGE "Enable label_image example" OFF)
 option(TFLITE_ENABLE_RUY "Enable experimental RUY integration" OFF)
 option(TFLITE_ENABLE_RESOURCE "Enable experimental support for resources" ON)
-option(TFLITE_ENABLE_NNAPI "Enable NNAPI (Android only)." ON)
+option(TFLITE_ENABLE_NNAPI "Enable NNAPI (Android only)." OFF)
 cmake_dependent_option(TFLITE_ENABLE_NNAPI_VERBOSE_VALIDATION "Enable NNAPI verbose validation." OFF
                        "TFLITE_ENABLE_NNAPI" ON)
 option(TFLITE_ENABLE_MMAP "Enable MMAP (unsupported on Windows)" ON)
@@ -181,9 +190,20 @@ if(NOT SYSTEM_PTHREADPOOL AND NOT TARGET pthreadpool)
   set(PTHREADPOOL_BUILD_TESTS OFF CACHE BOOL "")
   set(PTHREADPOOL_BUILD_BENCHMARKS OFF CACHE BOOL "")
   set(PTHREADPOOL_ALLOW_DEPRECATED_API OFF CACHE BOOL "")
+  
+  if(TFLITE_LESS_LINK)
+    set(BUILD_SHARED_LIBS OFF)
+  endif()
+
   add_subdirectory(
     "${PTHREADPOOL_SOURCE_DIR}"
-    "${CMAKE_BINARY_DIR}/pthreadpool")
+    "${CMAKE_BINARY_DIR}/pthreadpool"
+    EXCLUDE_FROM_ALL)
+  
+  if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+    set(BUILD_SHARED_LIBS ON)
+  endif()
+
 endif()
 set(TF_TARGET_PRIVATE_OPTIONS "")
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang$")

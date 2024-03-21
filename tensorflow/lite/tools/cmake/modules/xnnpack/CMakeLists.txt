@@ -27,7 +27,16 @@ foreach(FLAG IN ITEMS CMAKE_ASM_FLAGS CMAKE_ASM_COMPILER_ARG1 CMAKE_C_FLAGS CMAK
   endif()
 endforeach()
 
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_subdirectory(
   "${xnnpack_SOURCE_DIR}"
   "${xnnpack_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
+
+if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+endif()

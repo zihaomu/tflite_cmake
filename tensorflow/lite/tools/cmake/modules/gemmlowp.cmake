@@ -45,9 +45,18 @@ set(BUILD_TESTING_TMP ${BUILD_TESTING})
 set(BUILD_TESTING OFF)
 
 set(GEMMLOWP_SOURCE_DIR "${gemmlowp_SOURCE_DIR}" CACHE PATH "Source directory")
+
+if(TFLITE_LESS_LINK)
+  set(BUILD_SHARED_LIBS OFF)
+endif()
+
 add_subdirectory(
   "${gemmlowp_SOURCE_DIR}/contrib"
   "${gemmlowp_BINARY_DIR}"
+  EXCLUDE_FROM_ALL
 )
+if(TFLITE_LESS_LINK AND TFLITE_SHARED_LIB)
+  set(BUILD_SHARED_LIBS ON)
+endif()
 
 set(BUILD_TESTING ${BUILD_TESTING_TMP})
